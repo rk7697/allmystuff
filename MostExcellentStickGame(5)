@@ -1,0 +1,42 @@
+print("Let's play a stick game. Suppose we have N sticks.")
+print("We take turns removing any number of sticks from 1 to K in each turn until the person who takes the last stick loses.")
+print("So on every turn, you can take 1,2,3..K sticks.")
+print("I get to go first")
+(n)=int(input("Choose N(Must be atleast 5), the number of starting sticks:").strip())
+if n <5:
+    raise TypeError("N has to be atleast 5!")
+(k)=int(input(("Choose K(Less than {} but bigger than 1), the maximum number of sticks we can remove per turn:").format(n)).strip())
+if k>=n:
+    raise TypeError("Make it less than N!")
+if k<2:
+    raise TypeError("Make it bigger than 1!")
+
+seq = []
+
+start = ((n-1)//(k+1))*(k+1)+1
+if n-start ==1:
+    print("I remove {} stick, so {} left.".format(n - start, start))
+else:
+    print("I remove {} sticks, so {} left.".format(n - start, start))
+seq.append(n-start)
+
+n=start
+while n>0:
+
+    r = int(input("Number of sticks for your turn:"))
+    seq.append(r)
+    n-=r
+
+    if n <0 or r >k or r<1:
+        raise TypeError("Remove sticks in the range from before!")
+    print("{} sticks left".format(n))
+    if n == 0:
+        print("You lose. Better luck next time")
+    else:
+        m = ((n - 1) // (k + 1)) * (k + 1) + 1
+        if m == 1:
+            print("I remove {} stick, so {} left.".format(n - m, m))
+        else:
+            print("I remove {} sticks, so {} left.".format(n - m, m))
+        seq.append(n-m)
+        n = m
