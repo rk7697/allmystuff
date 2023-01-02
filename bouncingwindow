@@ -1,0 +1,35 @@
+v1=10
+v2=5
+x=900
+y=600
+count=1
+import time
+import pygame
+import os
+pygame.init()
+while count<100:
+    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y)
+    clock=10
+    run = True
+    screen=pygame.display.set_mode((200, 200))
+    while run and clock>0:
+        clock-=1
+        pygame.display.update()
+    pygame.quit()
+
+    if x>=1530:
+        x-=5
+        v1*=-1
+    if x<-0:
+        x+=5
+        v1*=-1
+    if y >= 820:
+        y -= 5
+        v2 *= -1
+    if y < 70:
+        y += 5
+        v2 *= -1
+    (x,y)=(x+v1,y+v2)
+#I also didn't include this, but there was another cool(and much slower) version of this where I recursively opened files on desktop that ran this so that 
+#the pygame window would briefly open and close again. This defintely wasn't super efficient, but it was kind of funny. I apologize my video was also kind
+#of laggy.
