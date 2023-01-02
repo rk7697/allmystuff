@@ -1,0 +1,33 @@
+import pygame
+import random
+screen=pygame.display.set_mode((700,700))
+running=True
+
+(a, b) = (350, 350)
+(m,n)=(random.randint(100,300)/100,random.randint(100,300)/100)
+count=10000
+list=[]
+(p,q,r)=(60,120,200)
+while running:
+    (p,q,r)=((p+1)%250,(q+1)%250,(r+1)%250)
+    (x, y, z) = (random.randint(0,p), random.randint(0, q), random.randint(0,r))
+    (a,b)=(a+m,b+n)
+    if a>600 or a<0:
+        m=-m/abs(m)*random.randint(50,100)/50 #I fiddled with these values to make the bouncing velocities arbitrary or exactly opposite
+    if b>600 or b<0:
+        n=-n/abs(n)*random.randint(50,100)/50
+    if m==0:
+        m+=1
+    if n==0:
+        n+=1
+    list.append([a,b])
+    #if len(list)>50: #I used this to make the block a sort of finite snake
+        #pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(list[len(list)-49][0],list[len(list)-49][1], 100, 100))
+
+
+
+    pygame.draw.rect(screen, (x, y, z), pygame.Rect(a, b, 100, 100))
+    pygame.display.flip()
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            running=False
