@@ -1,0 +1,58 @@
+import pygame
+pygame.init()
+screen = pygame.display.set_mode((1000, 500))
+import random
+lines=open("worddump.txt").readlines()
+s=""
+for i in range(3):
+    s+=lines[random.randrange(0,len(lines))][0:-1]
+    if i<2:
+        s+=" "
+quit=False
+run=True
+sentence=s
+length=0
+for x in sentence.strip().split():
+    length+=1
+font = pygame.font.SysFont(None, 45)
+count=0
+startedTyping=False
+while run:
+    if startedTyping:
+        count+=.005
+    screen.fill((0, 0, 0))
+    img = font.render(sentence, True, (250, 250, 250))
+    img2 = font.render(str(int(count)), True, (250, 250, 250))
+    screen.blit(img2, (500, 20))
+    screen.blit(img, (0, 250))
+    pygame.display.flip()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            quit = True
+            run = False
+        if event.type == pygame.KEYDOWN:
+            startedTyping=True
+            key = sentence[0].lower()
+            if event.key == ord(key):
+                sentence=sentence[1:]
+                if len(sentence) == 0:
+                    run = False
+endscreen = pygame.display.set_mode((500, 500))
+pygame.display.flip()
+wpm = length / count*60
+end=True
+while end:
+    img = font.render("WPM={}".format(wpm), True, (250, 250, 250))
+    img2=font.render("Press R to Restart",True, (250, 250, 250))
+    endscreen.blit(img, ((0, 250)))
+    endscreen.blit(img2, ((100, 50)))
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT or quit == True:
+            end=False
+        if event.type == pygame.KEYDOWN:
+            if event.key==pygame.K_r or event.key==pygame.K_R:
+                exec(open("words.py").read())
+
+    pygame.display.flip()
+#(I didn't add the list of words from the worddump.txt file here)
