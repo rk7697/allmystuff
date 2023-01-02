@@ -1,0 +1,28 @@
+def f(a,c,x):
+    if abs(a)>100:
+        return False
+    if x==20:
+        return bool(abs(a*a+c-a)<1)
+    if x<20:
+        return(f(a*a+c,c,x+1))
+s=[]
+for a in range(-1000,1000):
+    x=a/1000
+    for b in range(-1000,1000):
+        y=b/1000
+        if f(complex(0,0),complex(x,y),0):
+            s.append(complex(x,y))
+a=[]
+b=[]
+for i in s:
+    a.append(i.real)
+    b.append(i.imag)
+import matplotlib.pyplot as plt
+
+x = a
+y = b
+
+plt.scatter(x, y)
+plt.show()
+#I know this was not very impressive, but I was kind of just excited about using recursion to make a kind of accurate plot! I'm still trying to figure out
+#how to make this more accurate. Sorry
