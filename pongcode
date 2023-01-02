@@ -1,0 +1,148 @@
+import time
+import pygame
+def secondindexgetter(x):
+    return int(x[1])
+def TextDisplayer(text, font, screen, screencoordinates):
+    displaystring = font.render(text, True, (250, 250, 250))
+    screen.blit(displaystring, screencoordinates)
+def LeaderboardDisplay(leaderboard,screen):
+    if screen.get_height()==700:
+        verticalstringheight=500
+    if screen.get_height()==500:
+        verticalstringheight=250
+    TextDisplayer("Leaderboard", mediumfont, screen, (screen.get_width()/2-100, verticalstringheight-25))
+    for item in leaderboard:
+        verticalstringheight += 30
+        playername =item[0].upper()
+        playerscore = item[1]
+        spacelength = 2*(20 - len(playerscore) - len(playername))
+
+        playertext = playername + spacelength * " " + playerscore
+        TextDisplayer(playertext, smallfont, screen, (screen.get_width()/2-50, verticalstringheight))
+
+
+
+#Username = input("Username:")
+pygame.init()
+largefont = pygame.font.SysFont(None, 140)
+mediumlargefont = pygame.font.SysFont(None, 110)
+mediumfont = pygame.font.SysFont(None, 50)
+smallfont = pygame.font.SysFont(None, 20)
+startscreen = pygame.display.set_mode((700, 700))
+
+list = open("leaderboard.dat", "r").readlines()
+oldleaderboard=[]
+for x in list:
+    oldleaderboard.append(x.split())
+LeaderboardDisplay(oldleaderboard,startscreen)
+TextDisplayer("PONG", largefont, startscreen, (225, 100))
+TextDisplayer("Username:", mediumfont, startscreen, (270, 230))
+pygame.display.flip()
+onstartscreen = True
+name=""
+Username=""
+while onstartscreen:
+    TextDisplayer(str(name), mediumfont, startscreen, (230, 300))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            onstartscreen = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                onstartscreen = False
+            else:
+                key =str(pygame.key.name(event.key))
+                if key=="a":
+                    s=3
+                else:
+                    s=2
+
+                name = len(name) * " " + s*" "+str(pygame.key.name(event.key))
+                Username+=str(pygame.key.name(event.key))
+    pygame.display.flip()
+gamescreen = pygame.display.set_mode((700, 700))
+ongamescreen = True
+for i in range(3, 0, -1):
+    numbertext = str(i)
+    TextDisplayer(str(i), mediumfont, startscreen, (350, 300))
+    pygame.display.flip()
+    time.sleep(.75)
+    gamescreen.fill((0, 0, 0))
+
+pygame.display.flip()
+
+ballx, bally, playerx, playery = [350, 350, 0, 350]
+moveplayerup, moveplayerdown = [False, False]
+ballright, ballup = [False, False]
+ballverticalscalar = 0
+score = 0
+
+while ongamescreen:
+    gamescreen.fill((0, 0, 0))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            ongamescreen = False
+        if event.type == pygame.KEYUP:
+            moveplayerup, moveplayerdown = [False, False]
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                moveplayerup = True
+            if event.key == pygame.K_DOWN:
+                moveplayerdown = True
+
+    playery -= bool(moveplayerup) * (5)
+    playery += bool(moveplayerdown) * (5)
+
+    player = pygame.draw.rect(gamescreen, (250, 250, 250), (playerx, playery, 10, 50))
+    bot = pygame.draw.rect(gamescreen, (250, 250, 250), (690, bally, 10, 50))
+    ballx += int(ballright) * (2.5)
+    ballx -= int(not ballright) * (2.5)
+    bally -= ballverticalscalar * int(ballup)
+    bally += ballverticalscalar * int(not ballup)
+    ball = pygame.draw.circle(gamescreen, (250, 250, 250), (ballx, bally), 8)
+    if ball.colliderect(player):
+        ballverticalscalar = abs((ball.centery - player.centery) * (.05) * 3 / 2)
+        ballright = True
+        score += 1
+    if ball.colliderect(bot):
+        ballverticalscalar = abs((ball.centery - bot.centery) * (.005) * 3 / 2)
+        ballright = False
+    if bally >= 700 or bally <= 0:
+        ballup = not ballup
+    if ballx < 0:
+        ongamescreen = False
+
+    TextDisplayer(str(score), mediumfont, gamescreen, (635, 90))
+    pygame.display.update()
+
+newleaderboard=oldleaderboard
+newleaderboard.append([str(Username),str(score)])
+newleaderboard.sort(key=secondindexgetter)
+newleaderboard.reverse()
+newleaderboard.pop(5)
+list2=[]
+for i in newleaderboard:
+    list2.append(i[0]+" "+str(i[1])+"\n")
+newlb=open("leaderboard.dat","w")
+newlb.writelines(list2)
+newlb.close()
+
+endscreen = pygame.display.set_mode((500, 500))
+LeaderboardDisplay(newleaderboard,endscreen)
+
+TextDisplayer("GAME OVER", mediumlargefont, endscreen, (15, 0))
+TextDisplayer("Play again?", mediumfont, endscreen, (50, 100))
+TextDisplayer("Press P", smallfont, endscreen, (100, 150))
+TextDisplayer("Quit", mediumfont, endscreen, (340, 100))
+TextDisplayer("Click the X", smallfont, endscreen, (335, 150))
+pygame.display.flip()
+OnEndScreen = True
+while OnEndScreen:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            OnEndScreen = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_p:
+                OnEndScreen = False
+                exec(open("main.py").read())
