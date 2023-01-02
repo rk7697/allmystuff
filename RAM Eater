@@ -1,0 +1,10 @@
+i=1
+if i<100:
+    print("recursion moment. this is file number {}".format(i))
+    reader = open("rameater" + str(i) + ".py", "r").readlines()
+    reader[0] = "i={}\n".format(i + 1)
+    newfile = open("rameater" + str(i + 1) + ".py", "w")
+    newfile.writelines(reader)
+    newfile.close()
+    exec(open("rameater" + str(i + 1) + ".py").read())
+    #Sorry;I didn't include the other files I had opened but they were just commands removing the files or executing them.
